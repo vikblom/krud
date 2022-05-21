@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: krud-psql-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: krud-psql-deployment
+  template:
+    metadata:
+      labels:
+        app: krud-psql-deployment
+    spec:
+      containers:
+        - name: krud-psql-container
+          image: krud-psql-img:latest
+          imagePullPolicy: "Never"
+          resources:
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+          ports:
+            - containerPort: 5432
+          # FIXME: Make into secrets
+          env:
+            - name: POSTGRES_USER
+              value: krud
+            - name: POSTGRES_PASSWORD
+              value: pass
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: krud-psql-service
+spec:
+  selector:
+    app: krud-psql-deployment
+  ports:
+    - protocol: TCP
+      port: 2345
+      targetPort: 5432
