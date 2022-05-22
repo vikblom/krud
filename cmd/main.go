@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"flag"
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -31,7 +32,7 @@ func main() {
 	}
 	logger.SetLevel(lvl)
 
-	// Crud
+	// Krud
 	db, err := sql.Open("pgx", *url)
 	if err != nil {
 		logger.Fatalf("open DB: %v", err)
@@ -44,10 +45,17 @@ func main() {
 	}
 
 	r := mux.NewRouter()
+
+	r.HandleFunc("/", HandleHello)
+
 	// "Proper" endpoint w/ user checking.
 	sr := r.PathPrefix("/api").Subrouter()
 	_ = krud.NewController(logger, sr, krud.DialFunc(dial))
 
 	logger.Infof("Serving HTTP at: %s", *addr)
 	logger.Fatal(http.ListenAndServe(*addr, r))
+}
+
+func HandleHello(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "HELLO\n")
 }

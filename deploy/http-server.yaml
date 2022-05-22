@@ -14,13 +14,12 @@ spec:
     spec:
       containers:
         - name: krud-http-deployment
-          image: krud-http-img:latest
-          imagePullPolicy: "Never"
+          image: europe-north1-docker.pkg.dev/valid-climber-350112/kube-images/krud-http:latest
           args: ["-url=postgresql://krud:pass@krud-psql-service:2345/krud"]
           resources:
             limits:
-              memory: "1Gi"
-              cpu: "1000m"
+              memory: "64Mi"
+              cpu: "100m"
           ports:
             - containerPort: 8080
 ---
@@ -29,9 +28,9 @@ kind: Service
 metadata:
   name: krud-http-service
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: krud-http-deployment
   ports:
-    - port: 8080
+    - port: 80
       targetPort: 8080

@@ -22,9 +22,9 @@ const DATE_FORMAT = "2006-01-02"
 func CleanDatabase(t *testing.T) (*sql.DB, func()) {
 	t.Helper()
 
-	url := os.Getenv("CRUD_TEST_DB_URL")
+	url := os.Getenv("KRUD_TEST_DB_URL")
 	if url == "" {
-		t.Skip("CRUD_TEST_DB_URL not set, skipping test dependent on DB")
+		t.Skip("KRUD_TEST_DB_URL not set, skipping test dependent on DB")
 	}
 	db, err := sql.Open("pgx", url)
 	if err != nil {

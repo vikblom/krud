@@ -55,7 +55,7 @@ type Controller struct {
 	log *log.Logger
 }
 
-type contextCrudDatabaser struct{}
+type contextKrudDatabaser struct{}
 
 // NewController adds endpoints under r and hooks them up to the resources behind dial.
 func NewController(log *log.Logger, r *mux.Router, dial Dialer) *Controller {
@@ -100,7 +100,7 @@ func (api Controller) AuthMiddleware(next http.Handler) http.Handler {
 		api.log.Infof("auth approved '%s' (%s) access to %s", user, r.RemoteAddr, r.RequestURI)
 
 		// Propagate db decorated for this approved user.
-		ctx := context.WithValue(r.Context(), contextCrudDatabaser{}, db)
+		ctx := context.WithValue(r.Context(), contextKrudDatabaser{}, db)
 		rr := r.WithContext(ctx)
 		next.ServeHTTP(w, rr)
 	})
@@ -153,7 +153,7 @@ func (api *Controller) CreateAuthor(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, ok := r.Context().Value(contextCrudDatabaser{}).(Databaser)
+	db, ok := r.Context().Value(contextKrudDatabaser{}).(Databaser)
 	if !ok {
 		WriteJson(w, errors.New("internal error"), http.StatusInternalServerError)
 		return
@@ -170,7 +170,7 @@ func (api *Controller) CreateAuthor(w http.ResponseWriter, r *http.Request) {
 
 func (api *Controller) ReadAuthor(w http.ResponseWriter, r *http.Request) {
 
-	db, ok := r.Context().Value(contextCrudDatabaser{}).(Databaser)
+	db, ok := r.Context().Value(contextKrudDatabaser{}).(Databaser)
 	if !ok {
 		WriteJson(w, errors.New("internal error"), http.StatusInternalServerError)
 		return
@@ -209,7 +209,7 @@ func (api *Controller) ReadAuthor(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *Controller) DeleteAuthor(w http.ResponseWriter, r *http.Request) {
-	db, ok := r.Context().Value(contextCrudDatabaser{}).(Databaser)
+	db, ok := r.Context().Value(contextKrudDatabaser{}).(Databaser)
 	if !ok {
 		WriteJson(w, errors.New("internal error"), http.StatusInternalServerError)
 		return
@@ -242,7 +242,7 @@ func (api *Controller) UpdateAuthor(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, ok := r.Context().Value(contextCrudDatabaser{}).(Databaser)
+	db, ok := r.Context().Value(contextKrudDatabaser{}).(Databaser)
 	if !ok {
 		WriteJson(w, errors.New("internal error"), http.StatusInternalServerError)
 		return
@@ -312,7 +312,7 @@ func GetIntFromRequest(r *http.Request, key string) (int, error) {
 }
 
 func (api *Controller) CreateBook(w http.ResponseWriter, r *http.Request) {
-	db, ok := r.Context().Value(contextCrudDatabaser{}).(Databaser)
+	db, ok := r.Context().Value(contextKrudDatabaser{}).(Databaser)
 	if !ok {
 		WriteJson(w, errors.New("internal error"), http.StatusInternalServerError)
 		return
@@ -349,7 +349,7 @@ func (api *Controller) CreateBook(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *Controller) ReadBook(w http.ResponseWriter, r *http.Request) {
-	db, ok := r.Context().Value(contextCrudDatabaser{}).(Databaser)
+	db, ok := r.Context().Value(contextKrudDatabaser{}).(Databaser)
 	if !ok {
 		WriteJson(w, errors.New("internal error"), http.StatusInternalServerError)
 		return
@@ -397,7 +397,7 @@ func (api *Controller) UpdateBook(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *Controller) DeleteBook(w http.ResponseWriter, r *http.Request) {
-	db, ok := r.Context().Value(contextCrudDatabaser{}).(Databaser)
+	db, ok := r.Context().Value(contextKrudDatabaser{}).(Databaser)
 	if !ok {
 		WriteJson(w, errors.New("internal error"), http.StatusInternalServerError)
 		return
@@ -429,7 +429,7 @@ func (api *Controller) DeleteBook(w http.ResponseWriter, r *http.Request) {
 
 func (api *Controller) Events(w http.ResponseWriter, r *http.Request) {
 
-	db, ok := r.Context().Value(contextCrudDatabaser{}).(Databaser)
+	db, ok := r.Context().Value(contextKrudDatabaser{}).(Databaser)
 	if !ok {
 		WriteJson(w, errors.New("internal error"), http.StatusInternalServerError)
 		return

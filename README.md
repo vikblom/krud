@@ -1,4 +1,4 @@
-# CRUD
+# KRUD
 
 ## Stack
 
@@ -35,14 +35,15 @@ Is there a good way of comparing expected vs. actual response vs. actual db chan
 - Better "Update" API.
 
 ## Minikube
-Using images built locally under minikube for simplicity (skips any registry).
+
+### Develop w/o a docker registry
+
+Use images built locally under minikube for simplicity (skips any registry).
 Pre-load the DB image with an init-file containing the schema.
 
 ```
+minikube start
 alias 'kubectl' 'minikube kubectl --'
-eval (minikube docker-env)
-docker build --target krud-psql-img -t krud-psql-img .
-docker build --target krud-http-img -t krud-http-img .
 
 kubectl get all
 kubectl logs -fl app=krud-http-deployment
@@ -52,6 +53,19 @@ kubectl port-forward service/krud-http-service 8080:8080
 minikube service --url service-name krud-http-service
 
 kubectl delete deployment --all
+```
+
+### Using minikube and GCP docker registry
+
+Pulling down images proved to be quite tricky.
+If `docker login` works that can be made into a k8s secret:
+```
+kubectl create secret generic regcred \
+    --from-file=.dockerconfigjson=$HOME/.docker/config.json \
+    --type=kubernetes.io/dockerconfigjson
+kubectl patch serviceaccount default \
+    -p '{"imagePullSecrets": [{"name": "regcred"}]}'
+kubectl get serviceaccount default -o yaml
 ```
 
 ## Useful Links
@@ -73,3 +87,5 @@ kubectl delete deployment --all
 - https://levelup.gitconnected.com/deploying-dockerized-golang-api-on-kubernetes-with-postgresql-mysql-d190e27ac09f
 
 - https://marukhno.com/running-go-application-in-kubernetes/
+
+- https://medium.com/google-cloud/kubernetes-nodeport-vs-loadbalancer-vs-ingress-when-should-i-use-what-922f010849e0

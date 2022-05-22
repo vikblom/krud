@@ -1,9 +1,9 @@
-FROM postgres:bullseye as krud-psql-img
+FROM postgres:bullseye as krud-psql
 
 COPY ./initdb/ /docker-entrypoint-initdb.d/
 
 
-FROM golang:1.17-alpine as krud-http-img
+FROM golang:1.17-alpine as krud-http
 
 WORKDIR /app
 # Allow a layer to be cached just with deps.
