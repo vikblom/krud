@@ -68,6 +68,17 @@ kubectl patch serviceaccount default \
 kubectl get serviceaccount default -o yaml
 ```
 
+## GCP
+
+More or less: https://cloud.google.com/kubernetes-engine/docs/deploy-app-cluster .
+After provisioning resources deplyoment is just:
+
+```
+make images
+gcloud container clusters get-credentials kube-cluster
+kubectl apply -f deploy
+```
+
 ## Useful Links
 
 - https://hub.docker.com/_/postgres
